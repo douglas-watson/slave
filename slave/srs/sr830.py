@@ -453,7 +453,8 @@ class SR830(InstrumentBase):
         """
         query = 'TRCA? {0}, {1}, {2}'.format(buffer, start, length)
         result = self.connection.ask(query)
-        return (float(f) for f in result.split())
+        # Result format: "1.0e-004,1.2e-004,". Strip trailing comma then split.
+        return (float(f) for f in result.strip(',').split(','))
 
     def trace_binary(self, buffer, start, length=1):
         """ Reads the points stored in the channel buffer.
@@ -473,4 +474,3 @@ class SR830(InstrumentBase):
         self.connection.write(query)
         result = self.connection.read_raw()
         return struct.unpack('f' * length, result)
-
