@@ -470,5 +470,7 @@ class SR830(InstrumentBase):
         import struct
 
         query = 'TRCB? {0}, {1}, {2}'.format(buffer, start, length)
-        result = self.connection.ask(query)
+        self.connection.write(query)
+        result = self.connection.read_raw()
         return struct.unpack('f' * length, result)
+
