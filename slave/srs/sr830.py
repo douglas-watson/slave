@@ -454,3 +454,21 @@ class SR830(InstrumentBase):
         query = 'TRCA? {0}, {1}, {2}'.format(buffer, start, length)
         result = self.connection.ask(query)
         return (float(f) for f in result.split())
+
+    def trace_binary(self, buffer, start, length=1):
+        """ Reads the points stored in the channel buffer.
+
+        :param buffer: Selects the channel buffer (either 1 or 2).
+        :param start: Selects the bin where the reading starts.
+        :param length: The number of bins to read.
+
+        This version of trace exchanges data in a binary format, and is much
+        faster than the ASCII version.
+
+        """
+
+        import struct
+
+        query = 'TRCB? {0}, {1}, {2}'.format(buffer, start, length)
+        result = self.connection.ask(query)
+        return struct.unpack('f' * length, result)
